@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class CountryController {
 
     private final CountryService countryService;
@@ -22,6 +23,11 @@ public class CountryController {
     @GetMapping("/countries")
     public List<Country> getAll() {
         return countryService.getAllCountries();
+    }
+
+    @GetMapping(value = "/countries", params = "country_name")
+    public Country getCountryByName(@RequestParam("country_name") String countryName) {
+        return countryService.getCountryByName(countryName);
     }
 
     @PostMapping("/add")

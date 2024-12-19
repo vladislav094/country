@@ -27,6 +27,12 @@ public class CountryService {
                 .toList();
     }
 
+    public Country getCountryByName(@Nonnull String countryName) {
+        return Country.fromEntity(
+                countryRepository.findByCountryName(countryName)
+        );
+    }
+
     @Transactional
     public @Nonnull Country saveCountry(@Nonnull Country country) {
         final String countryName = country.countryName();
