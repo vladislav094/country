@@ -1,0 +1,23 @@
+query Country($id: ID!) {
+    country(id: $id) {
+        id,
+        countryName,
+        countryCode
+    }
+}
+
+query AllCountries($page:Int, $size:Int) {
+    countries(page: $page, size: $size) {
+        edges{
+            node{
+                id
+                countryName
+                countryCode
+            }
+        }
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+        }
+    }
+}
