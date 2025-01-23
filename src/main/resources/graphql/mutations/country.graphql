@@ -1,0 +1,7 @@
+mutation AddCountry($input: CountryInput!){
+    addCountry(input: $input) {
+        id
+        countryName
+        countryCode
+    }
+}

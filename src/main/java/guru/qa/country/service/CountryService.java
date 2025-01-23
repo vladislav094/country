@@ -1,52 +1,26 @@
 package guru.qa.country.service;
 
 import guru.qa.country.data.Country;
-import guru.qa.country.data.CountryEntity;
-import guru.qa.country.data.CountryRepository;
-import jakarta.annotation.Nonnull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import guru.qa.country.data.graphql.CountryGql;
+import guru.qa.country.data.graphql.CountryInputGql;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-@Service
-public class CountryService {
+public interface CountryService {
 
-    private final CountryRepository countryRepository;
+    Country countryById(String id);
 
-    @Autowired
-    public CountryService(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository;
-    }
+    List<Country> allCountries();
 
-    public List<Country> getAllCountries() {
-        return countryRepository.findAll()
-                .stream()
-                .map(Country::fromEntity)
-                .toList();
-    }
+    Country addCountry(Country country);
 
-    @Transactional
-    public @Nonnull Country saveCountry(@Nonnull Country country) {
-        final String countryName = country.countryName();
-        final String countryCode = country.countryCode();
+    Country updateCountryById(Country country);
 
-        CountryEntity ce = new CountryEntity();
-        ce.setCountryName(countryName);
-        ce.setCountryCode(countryCode);
+    CountryGql countryGqlById(String id);
 
-        return Country.fromEntity(countryRepository.save(ce));
-    }
+    Slice<CountryGql> allGqlCountries(Pageable pageable);
 
-    @Transactional
-    public @Nonnull Country updateCountryName(@Nonnull String currentCountryName, @Nonnull String newCountryName) {
-        CountryEntity country = countryRepository.findByCountryName(currentCountryName);
-        if (country == null) {
-            throw new IllegalArgumentException(String.format("Country with name %s not found", currentCountryName));
-        }
-        country.setCountryName(newCountryName);
-
-        return Country.fromEntity(countryRepository.save(country));
-    }
+    CountryGql addCountryGql(CountryInputGql country);
 }
