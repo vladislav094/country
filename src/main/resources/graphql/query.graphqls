@@ -17,20 +17,3 @@ input CountryInput {
     countryName: String
     countryCode: String
 }
-
-type CountryConnection {
-    edges: [CountryEdge]!
-    pageInfo: PageInfo!
-}
-
-type CountryEdge {
-    cursor: String!
-    node: Country!
-}
-
-type PageInfo {
-    hasPreviousPage: Boolean!
-    hasNextPage: Boolean!
-    startCursor: String
-    endCursor: String
-}

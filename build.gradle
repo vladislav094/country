@@ -1,3 +1,11 @@
+buildscript {
+	ext {
+		graphqlIntrospectionUrl = System.getProperty("test.env") == "docker"
+				? "http://gateway.niffler.dc:8090/graphql"
+				: "http://127.0.0.1:8080/graphql"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.0'
@@ -7,6 +15,33 @@ plugins {
 
 group = 'guru.qa'
 version = '0.0.1-SNAPSHOT'
+
+apollo {
+	service("country") {
+		generateKotlinModels.set(false)
+		packageName.set("country")
+//		srcDir("src/main/resources/graphql")
+		srcDir("src/test/graphql")
+//		mapScalar("Date", "java.util.Date")
+		introspection {
+			endpointUrl.set("$graphqlIntrospectionUrl")
+			schemaFile.set(file("src/test/graphql/schema.graphqls"))
+		}
+		outputDirConnection {
+			connectToJavaSourceSet("test")
+		}
+	}
+}
+
+sourceSets {
+	test {
+		java {
+			srcDir('src/test/java')
+			srcDir("$buildDir/generated-sources/test/xjc")
+			srcDir("$buildDir/generated/source/apollo/country")
+		}
+	}
+}
 
 java {
 	toolchain {
@@ -27,12 +62,21 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	runtimeOnly "org.flywaydb:flyway-core:10.17.1"
 	runtimeOnly "org.flywaydb:flyway-database-postgresql:10.17.1"
-	// graphQl
+	// GraphQl backend
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation "com.tailrocks.graphql:graphql-datetime-spring-boot-starter:6.0.0"
+	// GraphQL test
+	testImplementation 'com.apollographql.java:client:0.0.2'
+	testImplementation 'com.apollographql.java:rx2:0.0.2'
+	testImplementation 'com.apollographql.adapters:apollo-adapters-core:0.0.4'
 
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.named { it == "generateCountryApolloSources" }.configureEach {
+	dependsOn("downloadCountryApolloSchemaFromIntrospection")
+}
+
