@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package guru.qa.country;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.grpc.country";
+option java_outer_classname = "CountryProto";
+
+service CountryService {
+  rpc Country(IdRequest) returns (CountryResponse) {}
+  rpc AllCountries(google.protobuf.Empty) returns (CountriesResponse) {}
+  rpc AddCountry(stream CountryRequest) returns (CountryCountResponse) {}
+  rpc RandomCountry(CountRequest) returns (stream CountryResponse) {}
+}
+
+message IdRequest {
+  string id = 1;
+}
+
+message CountRequest {
+  uint32 count = 1;
+}
+
+message CountryCountResponse {
+  int32 count = 1;
+}
+
+message CountryResponse {
+  string id = 1;
+  string countryName = 2;
+  string countryCode = 3;
+}
+
+message CountriesResponse {
+  repeated CountryResponse allCountries = 1;
+}
+
+message CountryRequest {
+  string countryName = 1;
+  string countryCode = 2;
+}

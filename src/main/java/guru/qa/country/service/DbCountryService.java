@@ -52,18 +52,6 @@ public class DbCountryService implements CountryService {
         return Country.fromEntity(countryRepository.save(ce));
     }
 
-    @Deprecated
-    @Transactional
-    public @Nonnull Country updateCountryName(@Nonnull String currentCountryName, @Nonnull String newCountryName) {
-        CountryEntity country = countryRepository.findByCountryName(currentCountryName);
-        if (country == null) {
-            throw new IllegalArgumentException(String.format("Country with name %s not found", currentCountryName));
-        }
-        country.setCountryName(newCountryName);
-
-        return Country.fromEntity(countryRepository.save(country));
-    }
-
     @Override
     @Transactional
     public Country updateCountryById(Country country) {
