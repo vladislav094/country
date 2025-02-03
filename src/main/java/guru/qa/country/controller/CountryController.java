@@ -1,7 +1,6 @@
 package guru.qa.country.controller;
 
 import guru.qa.country.data.Country;
-import guru.qa.country.dto.UpdateCountryRequest;
 import guru.qa.country.service.DbCountryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +35,5 @@ public class CountryController {
     @ResponseStatus(HttpStatus.CREATED)
     public Country addCountry(@RequestBody Country country) {
         return countryService.addCountry(country);
-    }
-
-    @Deprecated
-    @PatchMapping("/country/{countryName}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Country updateCountryName(@PathVariable String countryName,
-                                     @RequestBody UpdateCountryRequest requestData) {
-        return countryService.updateCountryName(countryName, requestData.getCountryName());
     }
 }
